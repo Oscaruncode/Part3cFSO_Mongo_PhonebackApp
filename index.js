@@ -3,7 +3,6 @@ const morgan= require("morgan")
 const cors = require("cors")
 require("dotenv").config();
 const Person = require("./models/personmodel");
-const { query } = require("express");
 
 const app = express()
 
@@ -44,9 +43,14 @@ app.delete("/api/persons/:id", (req,res,next) =>{
 
 app.post("/api/persons", (req,res,next) => {           
   const body = req.body;
-  const newPerson = new Person(body)
+  const newPerson = new Person(body);
 
-  newPerson.save().then(()=>res.json(newPerson)).catch(err=>next(err))
+  Person.find({"name":body.name}).then(personExist=>{
+    if(personExist[0]){next({name:"name is already in the PhoneBook"})}
+    else{
+      newPerson.save().then(()=>res.json(newPerson)).catch(err=>next(err))
+    }
+  })
 }
 )
 
@@ -74,6 +78,9 @@ const handlerErrors = (error,req,res,next)=> {
   }
   if(error.name==="ValidationError"){
     return res.status(400).json({error:error.message})
+  }
+  if(error.name==="name is already in the PhoneBook"){
+      return res.status(403).json({error:error.name})
   }
 
   next(error)
