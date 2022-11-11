@@ -1,12 +1,20 @@
 const mongoose = require("mongoose");
-
+require("dotenv").config();
 const url = process.env.MONGODB_URI;
 
-mongoose.connect(url).then(res=>{console.log("connected to BD in", url)})
+
+mongoose.connect(url).then(res=>{console.log("connected to BD in MongoDB")})
 
 const persSchema = new mongoose.Schema({
-    "name":String,
-    "number":String
+    "name":{
+        type: String,
+        minLength: 3,
+        required: true
+    },
+    "number":{
+        type: String,
+        required: true
+    }
 })
 
 
@@ -18,4 +26,4 @@ persSchema.set("toJSON", {
     }
 })
 
-module.exports = mongoose.model("Per",persSchema)
+module.exports = mongoose.model("Person",persSchema)
