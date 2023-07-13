@@ -1,3 +1,3 @@
 # phoneback
  
-This if for the part3 C exercise
+This is an excersice for the part3 C of FSO Course
